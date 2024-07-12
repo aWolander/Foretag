@@ -1,4 +1,16 @@
 # Foretag
+TODO:
+Kortsiktigt:
+Läsa/skriva CSV
+Piffa till så att graphs passar bättre på koden och mer grafer typ
+Komma på vad vi kan plotta
+Bättre prompts
+
+Långsiktigt (halvt spekulativt):
+Bättre databas. Mongo?
+Egen AI
+Produkt vi kan sälja som ger kunder att göra allt dehär själv på enkelt sätt
+
 
 Ni kommer behöva några libraries. ba googla vad som importerar å ni lär hitta det.
 
