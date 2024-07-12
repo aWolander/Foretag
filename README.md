@@ -5,7 +5,8 @@ Ni kommer behöva några libraries. ba googla vad som importerar å ni lär hitt
 Skriv i snake_case, inte CamelCase eller något annat. Klasser är i Stora Bokstäver. Försök vara så explicit som möjligt i variabel/funktionsnamn. 
 Jag vill inte se otydliga variabelnamn. Dödsstraff om ni döper variabler till typ "i" eller "temp". Skriv i princip aldrig:
 ```py
-for i in range(list)
+for i in range(list):
+  do_something(i)
 ```
 Det finns typ alltid ett bättre namn än "i".
 
@@ -28,7 +29,7 @@ Det är en mardröm att läsa.
 Använd type hints. Kommer göra allt lättare i längden. Det är hela 
 ```py
 def blabla(number: int) -> str: 
-  return "blablabla"
+    return "blablabla"
 ```
 Det här specar att man sätter in en siffra och får ut en string. 
 Om man kan få ut flera olika datatyper ur en funktion så borde ni nog skriva om funktionen.
