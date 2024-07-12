@@ -4,8 +4,7 @@ from abc import ABC, abstractmethod
 # r"C:\Users\Gustav\Desktop\företag\review_data.xlsx"
 
 class Excel_Writer:
-    def __init__(self, location: str) \
-        -> None:
+    def __init__(self, location: str) -> None:
         # try:
         #     self.app = xw.apps[xw.apps.keys()[1]]
         # except:
@@ -21,8 +20,7 @@ class Excel_Writer:
         self.sheet = None
         self.current_row = 0
 
-    def set_sheet(self, sheet_name: str) \
-        -> None:
+    def set_sheet(self, sheet_name: str) -> None:
         self.current_row = 0
         sheet_name = self._make_name_legal(sheet_name)
         try:
@@ -34,15 +32,18 @@ class Excel_Writer:
 
 
     
-    def _make_name_legal(self, name: str) \
-        -> None:
+    def _make_name_legal(self, name: str) -> str:
         # turns name into legal excel name
         illegal_characters = r":\/=*[]"
         return name.translate({ord(symbol) : None for symbol in illegal_characters})[:31]    
 
     
-    def write(self, leftmost_entries: list[str], data_lists: list[list[str]], link: str = "") \
-        -> None:
+    def write(self, leftmost_entries: list[str], data_lists: list[list[str]], link: str = "") -> None:
+        '''
+        leftmost_entries go to the far left (for example, title or other summarizing information)
+        data_lists are of arbitrary length that extend to the right
+        optionally add a link to to top left entry
+        '''
         if self.sheet is None:
             print("Sheet not set")
             return
@@ -62,8 +63,7 @@ class Excel_Writer:
         self.current_row += height
 
     
-    def draw_square(self, height: int, width: int) \
-        -> None:
+    def draw_square(self, height: int, width: int) -> None:
         # make pretty
         # väldigt ful ruta just nu
         self.sheet[self.current_row:(self.current_row+height), 0:width].api.Borders(7).Weight=2
@@ -73,13 +73,11 @@ class Excel_Writer:
 
 
     
-    def close(self) \
-        -> None:
+    def close(self) -> None:
         self.book.save()
         self.app.quit()
     
-    def save(self) \
-        -> None:
+    def save(self) -> None:
         self.book.save()
 
 

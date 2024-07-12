@@ -14,7 +14,7 @@ itereras flera gånger.
 Bättre promts, alltid.
 '''
 class Review_assistant:
-    def __init__(self):
+    def __init__(self) -> None:
         self.messages = []
         self.texts = []
         self.initial_rating_messages = [{"role": "system", "content":
@@ -39,7 +39,7 @@ class Review_assistant:
     
     # def analyze_texts(self, initial_message, )
 
-    def rate_reviews(self):
+    def rate_reviews(self) -> list[str]:
         temp_messages = self.initial_rating_messages
         ratings = []
         for review_message in self.messages:
@@ -56,7 +56,7 @@ class Review_assistant:
             ratings.append(rating)
         return ratings
     
-    def summarize(self):
+    def summarize(self) -> list[str]:
         temp_messages = self.summary_messages + self.messages
         chat = openai.chat.completions.create(
             model="gpt-3.5-turbo", 
@@ -68,7 +68,7 @@ class Review_assistant:
         summary = chat.choices[0].message.content
         return summary
 
-    def sentiment_reviews(self):
+    def sentiment_reviews(self) -> list[str]:
         temp_messages = self.initial_sentiment_messages + self.messages
         sentiments = []
         for message in self.messages:
@@ -85,23 +85,23 @@ class Review_assistant:
             sentiments.append(sentiment)
         return sentiments
     
-    def add_texts(self, texts):
+    def add_texts(self, texts: list[str]) -> None:
         self.texts += texts
         self.messages += self._strings_to_message_format("user", texts)
 
-    def _string_to_message_format(self, role, text):
+    def _string_to_message_format(self, role: str, text: str) -> dict[str, str]:
         return {"role": role, "content":text}
 
-    def _strings_to_message_format(self, role, texts):
+    def _strings_to_message_format(self, role: str, texts: list[str]) -> list[dict[str, str]]:
         return [self._string_to_message_format(role, text) for text in texts]
 
     
-    def clear_chat(self):
+    def clear_chat(self) -> None:
         self.messages = []
         self.texts = []
     
     
-    def give_product_name(self, name):
+    def give_product_name(self, name: str) -> None:
         # Depreceated
         self.rating_messages.append({"role": "system", "content":"Produktens namn är: " + name})
 

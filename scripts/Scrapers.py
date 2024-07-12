@@ -1,14 +1,15 @@
 import requests
 import time
-import excel_writer_old
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
 from datetime import datetime
 from dateutil.relativedelta import *
 import re
 from abc import ABC, abstractmethod
+
+import Excel_Writer
+
 '''
 TODO:
 Excel (löst)
@@ -18,18 +19,17 @@ hype??? (fuck you webhallen) (löst)
 vissa reviews har ingen text. spara stjärnor? (löst)
 infiniscroll (löst)
 olika kategorier (löst)
-Implementera JSON för scrape_product. Group syftar på olika varianter av en produkt. Typ färger på en macbook.
+Implementera JSON för scrape_product i webhallen. Group syftar på olika varianter av en produkt. Typ färger på en macbook.
 '''
 
 
 class Review_Scraper(ABC):
-    def __init__(self, url, output_file, products_url="", categories_url=""):
-        self.writer = excel_writer_old.Scraping_writer(output_file)
+    def __init__(self, url: str, output_file: str, products_url: str = "", categories_url: str = "") -> None:
+        self.writer = Excel_Writer.Scraping_writer(output_file)
         self.driver = webdriver.Chrome()
         self.url = url
     
-    def scrape_site(self) \
-        -> None:
+    def scrape_site(self) -> None:
         try:
             category_names_ids = self.get_categories()
             for category_name_id in category_names_ids:
@@ -38,8 +38,12 @@ class Review_Scraper(ABC):
             print(e)
         self.close()
 
-    def scrape_category(self, category_name: str, category_id: str) \
-        -> None:
+    def scrape_category(self, category_name: str, category_id: str) -> None:
+        '''
+        scrapes AND writes to excel. dont like that.
+        Want to seperate writing and scraping, but then I would have to write a whole category at a time.
+        rip memory.
+        '''
         self.writer.set_sheet(category_name)
         product_names_ids = self.get_products_in_category(category_id)
         for product_name, product_id in product_names_ids:
@@ -50,45 +54,45 @@ class Review_Scraper(ABC):
         self.writer.save()
 
     @abstractmethod
-    # category_names, category_ids
-    def get_products_in_category(self, category_id: str) \
-        -> tuple[list[str], list[str]]:
+    def get_products_in_category(self, category_id: str) -> list[list[str], list[str]]:
+        '''
+        returns: [category_names, category_ids]
+        '''
         pass
 
     @abstractmethod
-    # category_names, category_ids
-    def get_categories(self) \
-        -> tuple[list[str], list[str]]:
+    def get_categories(self) -> list[list[str], list[str]]:
+        '''
+        returns: [category_names, category_ids]
+        '''
         pass
 
     @abstractmethod
-    # reviews_text, review_dates, review_stars
-    def scrape_product(self, product_id: str) \
-        -> tuple[list[str], list[str], list[str]]:
+    def scrape_product(self, product_id: str) -> list[list[str], list[str], list[str]]:
+        '''
+        returns: [reviews_text, review_dates, review_stars]
+        '''
         pass
 
-    def product_id_to_url(self, product_id: str) \
-        -> str:
+    def product_id_to_url(self, product_id: str) -> str:
         return self.products_url + product_id
     
-    def category_id_to_url(self, category_id: str) \
-        -> str:
+    def category_id_to_url(self, category_id: str) -> str:
         return self.categories_url + category_id
 
-    def close(self) \
-        -> None:
+    def close(self) -> None:
         self.writer.close()
         self.driver.quit()
 
 
 class WH_scraper(Review_Scraper):
-    def __init__(self, url, output_file):
+    def __init__(self, url: str, output_file: str) -> None:
         # kan iterera över sektion men blir så jävla mycket
         super().__init__(url, output_file, "https://www.webhallen.com/se/product/", "https://www.webhallen.com/api/productdiscovery/category/")
         self.now = datetime.now()
         self.driver.implicitly_wait(1)
 
-    def get_categories(self):
+    def get_categories(self) -> list[list[str], list[str]]:
         self.driver.get(self.url)
         time.sleep(3)
         self.cookiebutton()
@@ -100,7 +104,7 @@ class WH_scraper(Review_Scraper):
         category_names = [category_tile.get_text(strip = True) for category_tile in category_tiles]
         return [category_names, category_ids]
 
-    def get_products_in_category(self, category_id: str):
+    def get_products_in_category(self, category_id: str) -> list[list[str], list[str]]:
         page = 1
         product_ids = []
         product_names = []
@@ -115,7 +119,11 @@ class WH_scraper(Review_Scraper):
 
         return [product_names, product_ids]
     
-    def scrape_product(self, product_id: str):
+    def scrape_product(self, product_id: str) -> list[list[str], list[str], list[str]]:
+        '''
+        Could almost certainly be done with json, much, much faster.
+        But it looks less cool.
+        '''
         url = self.product_id_to_url(product_id)
         self.driver.get(url)
         time.sleep(0.5)
@@ -134,13 +142,14 @@ class WH_scraper(Review_Scraper):
         soup = BeautifulSoup(self.driver.page_source, 'html.parser')
         reviews_html = soup.find_all(class_="review")
         if reviews_html == []:
-            # No reviews
-            # will return [[],"",[]]
+            # When product has no reviews. will return [[],"",[]]
             return [reviews_text, review_dates, total_stars, review_stars]
 
         # Could potentially cause issues. Only works as intended if the first stars
         # are the total. If no reviews exist, this fetches stars from suggested products.
-        total_stars = soup.select_one(".stars")["title"]        
+        # Otherwise this works, though I dont care for total stars anymore
+        # total_stars = soup.select_one(".stars")["title"]   
+        #   
         for review_html in reviews_html:
             if review_html.find(class_="flames") is None:
                 # Hype reviews. Varför webhallen? Varför?
@@ -152,18 +161,16 @@ class WH_scraper(Review_Scraper):
                 review_stars.append(review_html.find(class_="stars")["title"])
                 # print(review_html.find(class_="sub-title").get_text(strip = True))
                 review_dates.append(self.date_handler(review_html.find(class_="sub-title").get_text(strip = True)))
+        return [reviews_text, review_dates, review_stars]
 
-        # Har med massor av newline och skit. Dåligt? Vet inte om chatgpt fattar kontexten.
-        return [reviews_text, review_dates, total_stars, review_stars]
-
-    def cookiebutton(self):
+    def cookiebutton(self) -> None:
+        # click cookie button
         try:
-            # click cookie button
             self.driver.find_element(By.CSS_SELECTOR, "#cookie-banner > div > button:nth-child(1)").click()
         except:
             pass
 
-    def date_handler(self, date_string: str):
+    def date_handler(self, date_string: str) -> datetime:
         date_split = date_string.split(" ")
         text_to_int = {"ett": 1,
                        "en":1,
