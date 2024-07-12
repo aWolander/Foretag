@@ -49,11 +49,11 @@ def scrape_category(self, category_name: str, category_id: str) -> None:
     rip memory.
     '''
 ```
-Använd # för korta kommentarer, till exempel:
+Använd # för korta kommentarer i funktioner, till exempel:
 ```py
 if reviews_html == []:
     # When product has no reviews. will return [[],"",[]]
     return [reviews_text, review_dates, total_stars, review_stars]
 ```
-För korta kommentarer. Unvik att ha för många
+Unvik att ha för många
 
