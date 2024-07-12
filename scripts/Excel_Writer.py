@@ -1,9 +1,10 @@
 import xlwings as xw
-from abc import ABC, abstractmethod
+from Writer import Writer
+
 # För att inte läsa av webhallen hela tiden
 # r"C:\Users\Gustav\Desktop\företag\review_data.xlsx"
 
-class Excel_Writer:
+class Excel_Writer(Writer):
     def __init__(self, location: str) -> None:
         # try:
         #     self.app = xw.apps[xw.apps.keys()[1]]

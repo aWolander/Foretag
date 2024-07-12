@@ -1,13 +1,11 @@
 from collections import defaultdict
 import xlwings as xw
 import pandas as pd
+from Reader import Reader, Super_Reader
 
-class Sheet_Reader:
+class Sheet_Reader(Reader):
     def __init__(self, entry_size: int, sheet: xw.Sheet) -> None:
-        self.sheet = sheet
-        self.current_row = 0
-        self.entry_size = entry_size
-        self.df = None
+        super.__init__(entry_size, sheet)
 
     def __iter__(self):
         return self
@@ -18,14 +16,13 @@ class Sheet_Reader:
         Borde return en df
         '''
 
-
         data_lists = []
-        leftmost = self.sheet[self.current_row:(self.current_row+self.entry_size), 0].value
+        leftmost = self.file[self.current_row:(self.current_row+self.entry_size), 0].value
         print(leftmost)
         if leftmost == [None]*self.entry_size:
             raise StopIteration
         try:
-            leftmost.append(self.sheet[self.current_row, 0].hyperlink)
+            leftmost.append(self.file[self.current_row, 0].hyperlink)
         except:
             #  Exception("The cell doesn't seem to contain a hyperlink!")
             # nån annan får fixa
@@ -35,7 +32,7 @@ class Sheet_Reader:
             current_column = 1
             temp_list = []
             while True:
-                temp_cell_value = self.sheet[self.current_row+sub_row, current_column].value
+                temp_cell_value = self.file[self.current_row+sub_row, current_column].value
                 if temp_cell_value is None:
                     break
                 temp_list.append(temp_cell_value)
@@ -67,38 +64,38 @@ class Sheet_Reader:
             self.df = pd.DataFrame(data=d)
 
     def get_name(self) -> str:
-        return self.sheet.name
+        return self.file.name
     
 
-class Book_Reader:
+class Book_Reader(Super_Reader):
     def __init__(self, entry_size: int, location: str) -> None:
         # try:
         #     self.app = xw.apps[xw.apps.keys()[0]]
 
         # except:
         #     print("hej")
+        super.__init__(entry_size, location)
         self.app = xw.App(visible=True, add_book=False)
         self.book = self.app.books.open(location, read_only=True)
-        self.sheet_readers = []
-        for sheet in self.book.sheets:
-            self.sheet_readers.append(Sheet_Reader(entry_size, sheet))
+        
         self.df = None
 
-    def set_sheet(self, sheetname: str) -> None:
-        try:
-            self.book.sheets[sheetname].activate()
-        except:
-            print("Sheet does not exist")
+    def _generate_sub_readers(self):
+        
+        temp_sub_readers = []
+        for sheet in self.book.sheets:
+            temp_sub_readers.append(Sheet_Reader(self.entry_size, sheet))
+        return temp_sub_readers
 
     def __iter__(self):
-        return iter(self.sheet_readers)
+        return iter(self.sub_readers)
     
     def __next__(self) -> Sheet_Reader:
-        return next(self.sheet_readers)
+        return next(self.sub_readers)
     
-    def make_df(self,  leftmost_names: list[str], data_list_names: list[str]) -> None:
-        for sheet in self.sheets:
-            self.df.add({self.sheet.get_name(): sheet.make_df(leftmost_names, data_list_names)})
+    # def make_df(self,  leftmost_names: list[str], data_list_names: list[str]) -> None:
+    #     for sheet in self.sheets:
+    #         self.df.add({self.sheet.get_name(): sheet.make_df(leftmost_names, data_list_names)})
 
 
 
