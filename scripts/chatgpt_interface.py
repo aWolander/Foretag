@@ -26,8 +26,7 @@ class Review_assistant:
             "Du är en hjälpsam assistent som kommer avgöra vad användare tyckte var viktigast"
             "i en recension på en produkt eller tjänst. Ha endast en recension i åtanke i taget. Bry dig inte om det folk har sagt tidigare."
             "Belys upp till tre exempel. Använd endast ett nyckelord. Du får endast ge tre nyckelord som svar, utveckla inte vidare." 
-            "Ha med både det användaren"
-            "tyckte var negativt och positivt."},
+            "Ha med både det användarentyckte var negativt och positivt."},
             {"role": "user", "content":"Är nöjd med denna, riktigt snabb. Men den är tyvärr rättså tung."},
             {"role":"assistant", "content":"Prestanda, Tyngd"},
             {"role":"user", "content":"Mycket dator för pengarna och relativt tyst. Har funkat utmärkt än så länge, rekommenderas!"},
@@ -48,7 +47,7 @@ class Review_assistant:
                 model="gpt-3.5-turbo", 
                 temperature=0.2, 
                 messages=temp_messages,
-                n=3,
+                n=1,
                 max_tokens=1
             )
             rating = chat.choices[0].message.content

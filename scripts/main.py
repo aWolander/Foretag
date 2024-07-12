@@ -8,6 +8,7 @@ from chatgpt_interface import Review_assistant
 TODO
 behöver typ strippa alla textfält i review_data2... Jobbigt
 app.kill() funkar fan inte bra. https://stackoverflow.com/questions/60906795/xlwings-cant-get-excel-application-to-quit-even-with-kill-method
+spara i csv eller något snabbare
 '''
 
 def main():

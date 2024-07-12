@@ -1,23 +1,35 @@
+from collections import defaultdict
 import xlwings as xw
+import pandas as pd
 
 class Sheet_Reader:
     def __init__(self, entry_size: int, sheet: xw.Sheet) -> None:
         self.sheet = sheet
         self.current_row = 0
         self.entry_size = entry_size
+        self.df = None
 
     def __iter__(self):
         return self
 
-    def __next__(self) -> list[list[str], list[str]]:
+    def __next__(self) -> pd.DataFrame:
         '''
         return: [[text in leftmost column + link of first item at the end], [entries to the right]]
+        Borde return en df
         '''
+
+
         data_lists = []
-        leftmost_entries = self.sheet[self.current_row:(self.current_row+self.entry_size), 0].value
-        if leftmost_entries == []:
+        leftmost = self.sheet[self.current_row:(self.current_row+self.entry_size), 0].value
+        print(leftmost)
+        if leftmost == [None]*self.entry_size:
             raise StopIteration
-        leftmost_entries.append(self.sheet[self.current_row, 0].hyperlink)
+        try:
+            leftmost.append(self.sheet[self.current_row, 0].hyperlink)
+        except:
+            #  Exception("The cell doesn't seem to contain a hyperlink!")
+            # nån annan får fixa
+            leftmost.append("")
         
         for sub_row in range(self.entry_size):
             current_column = 1
@@ -31,9 +43,28 @@ class Sheet_Reader:
             data_lists.append(temp_list)
 
         self.current_row += self.entry_size
+        # entry_df = pd.DataFrame
+        # d = {"leftmost": leftmost, "data_lists": data_lists}
+        
 
-        return [leftmost_entries, data_lists]
+
+        # return entry_df(data=d, dtype=str)
+        return [leftmost, data_lists]
     
+    def get_df(self):
+        return self.df
+
+    def make_df(self, leftmost_names: list[str], data_list_names: list[str]) -> None:
+        if self.df is None:
+            # d = {leftmost_names: [], data_list_names: []}
+            d = defaultdict(list)
+            for [leftmost, data_lists] in self:
+                for i in range(len(leftmost_names)):
+                    d[leftmost_names[i]].append(leftmost[i])
+                for i in range(len(data_list_names)):
+                    d[data_list_names[i]].append(data_lists[i])
+                
+            self.df = pd.DataFrame(data=d)
 
     def get_name(self) -> str:
         return self.sheet.name
@@ -51,6 +82,7 @@ class Book_Reader:
         self.sheet_readers = []
         for sheet in self.book.sheets:
             self.sheet_readers.append(Sheet_Reader(entry_size, sheet))
+        self.df = None
 
     def set_sheet(self, sheetname: str) -> None:
         try:
@@ -64,4 +96,10 @@ class Book_Reader:
     def __next__(self) -> Sheet_Reader:
         return next(self.sheet_readers)
     
+    def make_df(self,  leftmost_names: list[str], data_list_names: list[str]) -> None:
+        for sheet in self.sheets:
+            self.df.add({self.sheet.get_name(): sheet.make_df(leftmost_names, data_list_names)})
+
+
+
     
