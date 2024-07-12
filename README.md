@@ -25,7 +25,7 @@ for:
 ````
 Det är en mardröm att läsa.
 
-Använd type hints. Kommer göra allt lättare i länden. Det är hela 
+Använd type hints. Kommer göra allt lättare i längden. Det är hela 
 ```
 def blabla(number: int) -> str: 
 return "blablabla"
@@ -36,5 +36,24 @@ Ni kommer kanske behöva uppdatera python för att inte få error här. Vissa ty
 
 Gör inte inheritence på mer än ett lager om ni inte verkligen, verkligen känner att det behövs.
 
+Jag har försökt va konsekvent med sortens kommentarer
+
 Om ni kan lista ut ett bra sätt att göra så att xlwings inte öppnar massor av jävla fönster hela fucking tiden när man kör programmet flera gånger så får ni puss på kinden.
+
+Angående kommentarer, använd ''' ''' för längre kommentarer, i början av funktioner och/eller för att speca hur returns ser ut i mer komplicarade fall, till exempel:
+```py
+def scrape_category(self, category_name: str, category_id: str) -> None:
+    '''
+    scrapes AND writes to excel. dont like that.
+    Want to seperate writing and scraping, but then I would have to write a whole category at a time.
+    rip memory.
+    '''
+```
+Använd # för korta kommentarer, till exempel:
+```py
+if reviews_html == []:
+    # When product has no reviews. will return [[],"",[]]
+    return [reviews_text, review_dates, total_stars, review_stars]
+```
+För korta kommentarer. Unvik att ha för många
 
