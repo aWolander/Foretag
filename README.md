@@ -6,7 +6,7 @@ Skriv i snake_case, inte CamelCase eller något annat. Klasser är i Stora Bokst
 Jag vill inte se otydliga variabelnamn. Dödsstraff om ni döper variabler till typ "i" eller "temp". Skriv i princip aldrig:
 ```py
 for i in range(list):
-  do_something(i)
+    do_something(i)
 ```
 Det finns typ alltid ett bättre namn än "i".
 
