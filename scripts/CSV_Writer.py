@@ -60,12 +60,12 @@ class CSV_Writer(Writer):
         
         height = max(len(data_lists), len(leftmost_entries))
         width = max([len(data_list) for data_list in data_lists])+1
-        self.draw_square(height, width)
+        self._draw_square(height, width)
 
         self.current_row += height
 
     
-    def draw_square(self, height: int, width: int) -> None:
+    def _draw_square(self, height: int, width: int) -> None:
         # make pretty
         # väldigt ful ruta just nu
         self.sheet[self.current_row:(self.current_row+height), 0:width].api.Borders(7).Weight=2

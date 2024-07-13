@@ -39,34 +39,34 @@ class Excel_Writer(Writer):
         return name.translate({ord(symbol) : None for symbol in illegal_characters})[:31]    
 
     
-    def write(self, leftmost_entries: list[str], data_lists: list[list[str]], link: str = "") -> None:
+    def write(self, data_names: list[str], data_lists: list) -> None:
         '''
-        leftmost_entries go to the far left (for example, title or other summarizing information)
-        data_lists are of arbitrary length that extend to the right
-        optionally add a link to to top left entry
+        Would like to write data_lists: list[list[str]] but that would exclude
+        single entries like "tile".
         '''
+        if len(data_names) < len(data_lists):
+            raise Exception("Some data lists are unnamed.")
+            
         if self.sheet is None:
-            print("Sheet not set")
-            return
+            raise Exception("Sheet is not set.")
         
-        # special case for adding hyperlink
-        self.sheet[self.current_row, 0].add_hyperlink(link, leftmost_entries[0])
-        for sub_row, leftmost_entry in enumerate(leftmost_entries[1:]):
-            self.sheet[self.current_row+sub_row+1, 0].value = leftmost_entry
+        for sub_row, row_name in enumerate(data_names):
+            self.sheet[self.current_row+sub_row, 0].value = row_name
 
         for sub_row, data_list in enumerate(data_lists):
             self.sheet[self.current_row + sub_row, 1].value = data_list
         
-        height = max(len(data_lists), len(leftmost_entries))
-        width = max([len(data_list) for data_list in data_lists])+1
-        self.draw_square(height, width)
+        # These are ugly. Maybe just to top and bottom?
+        # height = max(len(data_lists), len(leftmost_entries))
+        # width = max([len(data_list) for data_list in data_lists])+1
+        # self.draw_square(height, width)
 
-        self.current_row += height
+        self.current_row += len(data_names)
 
     
     def draw_square(self, height: int, width: int) -> None:
         # make pretty
-        # väldigt ful ruta just nu
+        # ganska ful ruta just nu
         self.sheet[self.current_row:(self.current_row+height), 0:width].api.Borders(7).Weight=2
         self.sheet[self.current_row:(self.current_row+height), 0:width].api.Borders(8).Weight=2
         self.sheet[self.current_row:(self.current_row+height), 0:width].api.Borders(9).Weight=2

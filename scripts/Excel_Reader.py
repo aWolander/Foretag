@@ -12,21 +12,20 @@ class Sheet_Reader(Reader):
 
     def __next__(self) -> pd.DataFrame:
         '''
-        return: [[text in leftmost column + link of first item at the end], [entries to the right]]
-        Borde return en df
+        returns: [data_names, data_lists] 
         '''
 
         data_lists = []
-        leftmost = self.file[self.current_row:(self.current_row+self.entry_size), 0].value
-        print(leftmost)
-        if leftmost == [None]*self.entry_size:
+        data_names = self.file[self.current_row:(self.current_row+self.entry_size), 0].value
+        if data_names == [None]*self.entry_size:
             raise StopIteration
-        try:
-            leftmost.append(self.file[self.current_row, 0].hyperlink)
-        except:
-            #  Exception("The cell doesn't seem to contain a hyperlink!")
-            # nån annan får fixa
-            leftmost.append("")
+        
+        # try:
+        #     data_names.append(self.file[self.current_row, 0].hyperlink)
+        # except:
+        #     #  Exception("The cell doesn't seem to contain a hyperlink!")
+        #     # nån annan får fixa
+        #     data_names.append("")
         
         for sub_row in range(self.entry_size):
             current_column = 1
@@ -46,22 +45,23 @@ class Sheet_Reader(Reader):
 
 
         # return entry_df(data=d, dtype=str)
-        return [leftmost, data_lists]
+        return [data_names, data_lists]
     
     def get_df(self):
         return self.df
 
-    def make_df(self, leftmost_names: list[str], data_list_names: list[str]) -> None:
+    def make_df(self) -> pd.DataFrame:
+        '''
+        makes a pandas dataframe of the whole sheet
+        '''
         if self.df is None:
             # d = {leftmost_names: [], data_list_names: []}
             d = defaultdict(list)
-            for [leftmost, data_lists] in self:
-                for i in range(len(leftmost_names)):
-                    d[leftmost_names[i]].append(leftmost[i])
-                for i in range(len(data_list_names)):
-                    d[data_list_names[i]].append(data_lists[i])
-                
+            for [data_names, data_lists] in self:
+                for i in range(len(data_names)):
+                    d[data_names[i]].append(data_lists[i])
             self.df = pd.DataFrame(data=d)
+        return self.df
 
     def get_name(self) -> str:
         return self.file.name

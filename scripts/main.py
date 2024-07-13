@@ -1,7 +1,7 @@
         # self.write_book = xw.Book(r"C:\Users\Gustav\Desktop\företag\chatgpt_output.xlsx")
         # self.data_book = xw.Book(r"C:\Users\Gustav\Desktop\företag\review_data.xlsx")
 import xlwings as xw
-import Excel_Reader as xle
+import Excel_Reader_Legacy as xle
 import Excel_Writer as xlw
 from chatgpt_interface import Review_assistant
 '''
@@ -16,7 +16,7 @@ def main():
     for app in xw.apps:
         app.kill()
     print(xw.apps)
-    reader = xle.Book_Reader(3, r"review_data2.xlsx")
+    reader = xle.Book_Reader_Legacy(3, r"review_data2.xlsx")
     writer = xlw.Excel_Writer(r"chatgpt_output69.xlsx")
     ai = Review_assistant()
     for review_sheet in reader:
@@ -34,8 +34,10 @@ def main():
             ai.add_texts(reviews)
             ai_ratings = ai.rate_reviews()
             ai_sentiments = ai.sentiment_reviews()
-            ai_summary = ai.summarize()
+            # ai_summary = ai.summarize()
             ai.clear_chat()
-            writer.write([product_name, ai_summary], [reviews, user_ratings, ai_sentiments, ai_ratings, dates], link = product_link)
+            writer.write([product_name, reviews, user_ratings, ai_sentiments, ai_ratings, dates], \
+                         ["Product name", "Review text", "User ratings", "AI sentiments", "AI ratings", "Dates"],
+                         )
 
 main()
