@@ -15,6 +15,7 @@ HP OMEN, 3, 4
 HP OMEN, 4, 4
 osv
 Beroende på vad för plots vi vill ha kan detta bli nödvändigt i princip
+Dessutom, om det är många produkter som inte har ratings, behöver dessa nog filtreras och omformateras med
 '''
 
 class Statistic_Analyzer:
