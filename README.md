@@ -1,13 +1,14 @@
 # Foretag
 TODO: \
 Kortsiktigt: \
-Läsa/skriva CSV \
-Piffa till så att graphs passar bättre på koden och mer grafer typ \
-Komma på vad vi kan plotta \
-Bättre prompts
+Läsa/skriva CSV (fuck that SQL Coolare)\
+Piffa till så att graphs passar bättre på koden och mer grafer typ (Henning)\
+Komma på vad vi kan plotta (Henning/Johan) \
+Bättre prompts (Henning) \
+NLTK (Johan)\
 
 Långsiktigt (halvt spekulativt): \
-Bättre databas. Mongo? \
+Bättre databas. Mongo? PostgreSQL.(GUSTAV) \ 
 Egen AI \
 Produkt vi kan sälja som ger kunder att göra allt dehär själv på enkelt sätt
 
