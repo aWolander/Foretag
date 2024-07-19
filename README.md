@@ -3,7 +3,7 @@ TODO: \
 Kortsiktigt: \
 Läsa/skriva CSV (fuck that SQL Coolare)\
 Piffa till så att graphs passar bättre på koden och mer grafer typ (Henning)\
-Komma på vad vi kan plotta (Henning/Johan) \
+Komma på vad vi kan plotta. Ha med pris. Kan man få något intressant samband med pris? Sammanfatta massa produkter. Jämför rating av AI och användare. (Henning/Johan) \
 Bättre prompts (Henning) \
 NLTK (Johan)\
 
