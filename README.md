@@ -5,12 +5,27 @@ Läsa/skriva CSV (fuck that SQL Coolare)\
 Piffa till så att graphs passar bättre på koden och mer grafer typ (Henning)\
 Komma på vad vi kan plotta. Ha med pris. Kan man få något intressant samband med pris? Sammanfatta massa produkter. Jämför rating av AI och användare. (Henning/Johan) \
 Bättre prompts (Henning) \
+MyGPT (Henning)\
 NLTK (Johan)\
 
 Långsiktigt (halvt spekulativt): \
 Bättre databas. Mongo? PostgreSQL.(GUSTAV) \ 
 Egen AI \
-Produkt vi kan sälja som ger kunder att göra allt dehär själv på enkelt sätt
+Produkt vi kan sälja som ger kunder att göra allt dehär själv på enkelt sätt\
+matplotlib ful - göra animerade grafer istället? 3b1b's library "tänk en wordcloud där orden går från 1 star till 2 till 3 till 4. Samma med plots som visar vanligaste keyworden och hur de skiftar med antalet stjärnor, eller tid eller dyl." (Johan vill koda detta)\
+
+
+
+Intressanta saker att plotta/mäta:\
+ord över tid.\
+ord vs pris.\
+hitta keywords.\
+rating över pris + keyword.\
+negativa saker bland positiva, positiva bland negativa.\
+Bra sätt att sammanfatta massor av produkter. En miljard grötiga bars inte bra.\
+Kontrast mellan AI rating och användarrating. Järmför med fint sätt. \
+Jämför hur viktiga keywords skiftar med pris/rating/tid.\
+
 
 
 Ni kommer behöva några libraries. ba googla vad som importerar å ni lär hitta det.
