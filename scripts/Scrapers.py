@@ -15,7 +15,7 @@ TODO:
 Excel (löst)
 chatgpt (kan finslipas lite)
 spara datum av reviewn (löst)
-hype??? (fuck you webhallen) (löst)
+hype??? (varför webhallen) (löst)
 vissa reviews har ingen text. spara stjärnor? (löst)
 infiniscroll (löst)
 olika kategorier (löst)
@@ -40,7 +40,7 @@ class Review_Scraper(ABC):
 
     def scrape_category(self, category_name: str, category_id: str) -> None:
         '''
-        scrapes AND writes to excel. dont like that.
+        scrapes AND writes. dont like that.
         Want to seperate writing and scraping, but then I would have to write a whole category at a time.
         rip memory.
         '''
